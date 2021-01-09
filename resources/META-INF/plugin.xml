@@ -31,7 +31,7 @@
     <!-- Add your actions here -->
     <action class="com.liang.DvaScanner" id="dvaScanner"
             text="DvaScanner" keymap="$default" description="Scan dva model">
-      <add-to-group group-id="CodeMenu" anchor="first"/>
+      <add-to-group group-id="AnalyzeMenu" anchor="first"/>
     </action>
   </actions>
 

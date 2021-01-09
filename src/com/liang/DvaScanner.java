@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.PlatformDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.Balloon;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.JBColor;
@@ -29,8 +30,8 @@ public class DvaScanner extends AnAction {
     }
 
     private void showModels(AnActionEvent anActionEvent,String res) {
-        showPopupBalloon(anActionEvent.getData(PlatformDataKeys.EDITOR),res);
-        System.out.println(res);
+//        showPopupBalloon(anActionEvent.getData(PlatformDataKeys.EDITOR),res);
+        showMessage(res);
     }
 
     private void showPopupBalloon(final Editor editor, final String result) {
@@ -41,6 +42,10 @@ public class DvaScanner extends AnAction {
                     .createBalloon()
                     .show(factory.guessBestPopupLocation(editor), Balloon.Position.below);
         });
+    }
+
+    private void showMessage(String msg){
+        Messages.showInfoMessage(msg,"Dva Helper");
     }
 
     /**
