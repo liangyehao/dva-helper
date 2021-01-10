@@ -1,7 +1,7 @@
 <idea-plugin>
   <id>com.liang.plugin.dvahelper</id>
   <name>Dva Helper</name>
-  <version>1.0</version>
+  <version>1.0.2</version>
   <vendor email="1094311509@qq.com" url="http://github.liangyehao.com">Liang Yehao</vendor>
 
   <description><![CDATA[
@@ -9,7 +9,7 @@
     ]]></description>
 
   <change-notes><![CDATA[
-      初始版本.<br>
+      通过扫描model文件夹下的文件获取.<br>
     ]]>
   </change-notes>
 
@@ -31,7 +31,8 @@
     <!-- Add your actions here -->
     <action class="com.liang.DvaScanner" id="dvaScanner"
             text="DvaScanner" keymap="$default" description="Scan dva model">
-      <add-to-group group-id="AnalyzeMenu" anchor="first"/>
+      <add-to-group group-id="ToolsMenu" anchor="first"/>
+
     </action>
   </actions>
 

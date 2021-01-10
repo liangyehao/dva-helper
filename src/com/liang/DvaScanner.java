@@ -10,55 +10,69 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.popup.Balloon;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.JBColor;
+import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.SystemIndependent;
 
 import java.awt.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 /**
  * @author liangyehao
  * @version 1.0
  * @date 2021/1/9 13:58
- * @content
+ * @content 查看umi项目dva的model
  */
 public class DvaScanner extends AnAction {
     @Override
     public void actionPerformed(@NotNull AnActionEvent anActionEvent) {
-        String projectBasePath = getProjectBasePath(anActionEvent);
-        String res = Utils.exec("umi dva list model",projectBasePath);
-        showModels(anActionEvent,res);
-        System.out.println();
+        Project project = anActionEvent.getData(PlatformDataKeys.PROJECT);
+        if (project!=null&&project.getBasePath()!=null) {
+            String basePath = uniteSeparator(project.getBasePath());
+            java.util.List<File> dvaModels = getDvaModels(basePath);
+            java.util.List<String> fileNames = getFileNames(dvaModels,basePath);
+            showDvaModels(fileNames);
+        }
     }
 
-    private void showModels(AnActionEvent anActionEvent,String res) {
-//        showPopupBalloon(anActionEvent.getData(PlatformDataKeys.EDITOR),res);
-        showMessage(res);
+    private void showDvaModels(java.util.List<String> fileNames) {
+        String br = "\n";
+        String tab = "\t";
+        StringBuilder msg = new StringBuilder("Total models: "+fileNames.size()+br);
+        for (String fileName : fileNames) {
+            msg.append(tab).append(fileName).append(br);
+        }
+        Messages.showInfoMessage(msg.toString(),"Dva Helper Created By Lyh");
     }
 
-    private void showPopupBalloon(final Editor editor, final String result) {
-        ApplicationManager.getApplication().invokeLater(() -> {
-            JBPopupFactory factory = JBPopupFactory.getInstance();
-            factory.createHtmlTextBalloonBuilder(result, null, new JBColor(new Color(186, 238, 186), new Color(73, 117, 73)), null)
-                    .setFadeoutTime(5000)
-                    .createBalloon()
-                    .show(factory.guessBestPopupLocation(editor), Balloon.Position.below);
-        });
+    private String uniteSeparator(String basePath) {
+        return basePath.replaceAll("\\\\", Matcher.quoteReplacement(File.separator))
+                .replaceAll("\\/", Matcher.quoteReplacement(File.separator))
+                .replaceAll("\\\\\\\\", Matcher.quoteReplacement(File.separator))
+                .replaceAll("\\/\\/", Matcher.quoteReplacement(File.separator));
     }
 
-    private void showMessage(String msg){
-        Messages.showInfoMessage(msg,"Dva Helper");
+    private java.util.List<String> getFileNames(java.util.List<File> dvaModels, @SystemIndependent String basePath) {
+        java.util.List<String> fileNames = new ArrayList<>();
+        dvaModels.forEach(file -> fileNames.add(file.getPath().replace(basePath+File.separator,"")));
+        return fileNames;
     }
 
     /**
-     * 得到项目的基本路径
+     * 获取Dva的model文件
      *
-     * @param anActionEvent 一个行动的事件
-     * @return {@link String}
+     * @param basePath 基本路径
+     * @return {@link java.util.List <File>}
      */
-    private String getProjectBasePath(@NotNull AnActionEvent anActionEvent) {
-        Project data = anActionEvent.getData(PlatformDataKeys.PROJECT);
-        if (data!=null) {
-            return data.getBasePath();
-        }
-        return "";
+    private List<File> getDvaModels(String basePath) {
+
+        Collection<File> files = FileUtils.listFiles(new File(basePath+File.separator+"src"), new String[]{"js", "ts"}, true);
+        return files.stream()
+                .filter(file -> file.getPath().contains(File.separator + "models") && !file.getPath().contains(".umi")).collect(Collectors.toList());
     }
 }
