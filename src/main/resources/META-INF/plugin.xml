@@ -1,0 +1,27 @@
+<idea-plugin>
+    <id>com.liang.dva-hepler</id>
+    <name>Dva Helper</name>
+    <vendor email="1094311509@qq.com" url="https://github.com/liangyehao/dva-helper">liagnyehao</vendor>
+
+    <description><![CDATA[
+    扫描项目中dva的model
+    ]]></description>
+
+    <idea-version since-build="173.0"/>
+
+    <!-- please see https://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.lang</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+        <action class="com.liang.DvaHelper" text="Scan Dva Models"
+                id="dvaHelper" description="View dva models in your umi project" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="first"/>
+        </action>
+    </actions>
+</idea-plugin>
